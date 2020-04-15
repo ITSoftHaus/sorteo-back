@@ -1,5 +1,5 @@
 interface IApplicationConfig {
-    listenPort: number,
+    listenPort: string,
     appName: string
 }
 

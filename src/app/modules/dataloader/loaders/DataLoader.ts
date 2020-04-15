@@ -29,7 +29,7 @@ export default class DataLoader implements IDataLouder {
     }
 
     private setup(fileName: string): void {
-        this.filePath = DataLoader.ROOT_FILES_LOADERS + "\\" + fileName;
+        this.filePath = DataLoader.ROOT_FILES_LOADERS + "/" + fileName;
         this.loader = new FileLoader(this.filePath);
     }
 

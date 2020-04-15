@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import session from 'express-session';
 import cookieParse from 'cookie-parser';
 import * as path from 'path';
+import mongoose from 'mongoose';
 
 import IApplicationConfig from './core/IApplicationConfig';
 import AppRoutes from './routes/AppRoutes';
@@ -16,7 +17,7 @@ import AppDataMinings from './modules/mining/datamining/AppDataMinings';
 
 var sessionNedbStore = require('nedb-session-store')(session);
 
-require('custom-env').env();
+require('dotenv').config({path: '.env'});
 
 export default class App {
 
@@ -50,9 +51,9 @@ export default class App {
      */
     private dataProcessors: AppDataProcessors;
 
-     /**
-     * DataMinings instance
-     */
+    /**
+    * DataMinings instance
+    */
     private dataMinings: AppDataMinings;
 
     public static getInstance(): App {
@@ -68,6 +69,14 @@ export default class App {
         this.config = config;
         this.expApp = express();
         App.app = this;
+    }
+
+    private setupMongoConfig() {
+        mongoose.Promise = global.Promise;
+        mongoose.connect(process.env.MONGO_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
     }
 
     private sessionStore: session.Store = new sessionNedbStore({
@@ -91,6 +100,8 @@ export default class App {
             saveUninitialized: true
         }));
 
+        this.expApp.use(this.setupMongoConfig);
+
         this.expApp.use(bodyParser.urlencoded({ extended: false }));
 
         this.expApp.use((_req: Request, res: Response, next: NextFunction) => {
@@ -110,7 +121,7 @@ export default class App {
 
         this.dataMinings = new AppDataMinings(this);
 
-        let appRouter = new AppRoutes();        
+        let appRouter = new AppRoutes();
 
         appRouter.mount(this.expApp);
 

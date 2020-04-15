@@ -1,7 +1,7 @@
 import App from './App';
 
 const APP_CONFIG = {
-    listenPort: 80,
+    listenPort: process.env.LISTEN_PORT,
     appName: process.env.APP_NAME
 };
 

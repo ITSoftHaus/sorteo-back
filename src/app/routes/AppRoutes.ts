@@ -2,7 +2,6 @@ import { Express, Router } from 'express';
 
 import IPathRoute from '../core/IPathRoute';
 import BackendRoutes from '../backend/routes/BackendRoutes';
-import FrontendRoutes from '../frontend/routes/FrontendRoutes';
 
 export default class AppRoutes {
     
@@ -10,8 +9,7 @@ export default class AppRoutes {
      * Lista de Roteadores
      */
     private routeList: IPathRoute[] = [
-        { path: '/backend', router: BackendRoutes },
-        { path: '/frontend', router: FrontendRoutes }
+        { path: '/backend', router: BackendRoutes }
     ];
 
     /**

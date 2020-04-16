@@ -29,7 +29,7 @@ export default class App {
     /**
      * App instance 
      */
-    private static app: App;
+    private static app: App;    
 
     /**
      * Express instance
@@ -68,12 +68,13 @@ export default class App {
 
         this.config = config;
         this.expApp = express();
+        this.setupMongoConfig();
         App.app = this;
     }
 
     private setupMongoConfig() {
         mongoose.Promise = global.Promise;
-        mongoose.connect(process.env.MONGO_URL, {
+        mongoose.connect(process.env.MONGO_URL_SRV, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -98,9 +99,7 @@ export default class App {
                 secure: true
             },
             saveUninitialized: true
-        }));
-
-        this.expApp.use(this.setupMongoConfig);
+        }));        
 
         this.expApp.use(bodyParser.urlencoded({ extended: false }));
 

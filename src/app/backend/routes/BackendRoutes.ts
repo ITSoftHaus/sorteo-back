@@ -79,7 +79,7 @@ const BackendRoutes: IApplicationRoute = {
                 '/lotofacil/loaded/mining/estatisticas/estatisticasconcursossorteados', (_req: Request, res: Response) => {
                     res.send({ estatisticasConcursosSorteados: SorteoCtrl.getLotofacilDataMining.getEstatisticasConcursosSorteados() })
                 }
-            );
+            ).get('/lotofacil/sorteios', SorteoCtrl.getLotofacilModel());
     }
 };
 

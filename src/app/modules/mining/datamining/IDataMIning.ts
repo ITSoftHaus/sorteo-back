@@ -10,5 +10,6 @@ export default interface IDataMining {
     getLoadedData(): object[];
     getNumerosSorteadoPorBola(_bola: string) : string[];
     getCalcularNumerosSorteadosPorBola(_bola: string): Totalizador[];
+    getTotalNumerosSorteadosTodosSorteios(): Totalizador[];
     getEstatisticasConcursosSorteados(): Estatistica[];    
 }

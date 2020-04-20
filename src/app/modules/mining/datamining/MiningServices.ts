@@ -2,14 +2,13 @@ import ArrayUtils from "../../../utils/ArrayUtils";
 import MiningUtils from "../../../utils/MiningUtil";
 import Totalizador from "../../../models/Totalizador";
 import Sorteo from "../../../models/Sorteo";
+
 export default class MiningServices {
 
     totalizadorModel: Totalizador;
 
     protected contabilizaPorcentagem({ numerosSorteadosPorBola, total }:
-        {
-            numerosSorteadosPorBola: Totalizador[]; total: number;
-        }) {
+        { numerosSorteadosPorBola: Totalizador[]; total: number; }) {
 
         Object.keys(numerosSorteadosPorBola).forEach((index) => {
             this.totalizadorModel = numerosSorteadosPorBola[index];
@@ -68,7 +67,7 @@ export default class MiningServices {
             if (!isNaN(numero))
                 numeros.push(numero);
         }
-        numeros.sort ((x,y) => {
+        numeros.sort((x, y) => {
             return x - y;
         })
         return numeros;

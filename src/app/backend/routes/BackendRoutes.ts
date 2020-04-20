@@ -76,6 +76,10 @@ const BackendRoutes: IApplicationRoute = {
                     res.send({ totalNumerosSorteadosPorBola: SorteoCtrl.getLotofacilDataMining.getCalcularNumerosSorteadosPorBola(_req.params.bola) })
                 }
             ).get(
+                '/lotofacil/loaded/mining/totalizador', (_req: Request, res: Response) => {
+                    res.send({ totalizadorLotofacil: SorteoCtrl.getLotofacilDataMining.getTotalNumerosSorteadosTodosSorteios() })
+                }
+            ).get(
                 '/lotofacil/loaded/mining/estatisticas/estatisticasconcursossorteados', (_req: Request, res: Response) => {
                     res.send({ estatisticasConcursosSorteados: SorteoCtrl.getLotofacilDataMining.getEstatisticasConcursosSorteados() })
                 }

@@ -61,7 +61,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "helmet": "^3.21.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "mathjs": "^6.2.3",
     "mongoose": "^5.9.9",
     "morgan": "^1.9.0",

@@ -1,14 +1,14 @@
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
 let path: string;
 
 switch (process.env.NODE_ENV) {
-  case "test":
+  case 'test':
     path = `${__dirname}/../../.env.test`;
     break;
-  case "production":
+  case 'production':
     path = `${__dirname}/../../.env.prod`;
     break;
   default:

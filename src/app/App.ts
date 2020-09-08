@@ -17,135 +17,139 @@ import AppDataMinings from './modules/mining/datamining/AppDataMinings';
 
 var sessionNedbStore = require('nedb-session-store')(session);
 
-require('dotenv').config({path: '.env'});
+require('dotenv').config({ path: '.env' });
 
 export default class App {
+  /**
+   * Store da applicação onde ficarão os sessions da aplicação
+   */
+  private static readonly ROOT_SESSION_STORE = path.normalize(
+    __dirname + process.env.ROOT_SESSION_STORE_PATH
+  );
 
-    /**
-    * Store da applicação onde ficarão os sessions da aplicação
-    */
-    private static readonly ROOT_SESSION_STORE = path.normalize(__dirname + process.env.ROOT_SESSION_STORE_PATH);
+  /**
+   * App instance
+   */
+  private static app: App;
 
-    /**
-     * App instance 
-     */
-    private static app: App;    
+  /**
+   * Express instance
+   */
+  private expApp: Express;
 
-    /**
-     * Express instance
-     */
-    private expApp: Express;
+  /**
+   * DataProviders instance
+   */
+  private dataProviders: AppDataProviders;
 
-    /**
-     * DataProviders instance
-     */
-    private dataProviders: AppDataProviders;
+  /**
+   * DataLoaders instance
+   */
+  private dataLoaders: AppDataLoaders;
 
-    /**
-     * DataLoaders instance
-     */
-    private dataLoaders: AppDataLoaders;
+  /**
+   * DataProcessors instance
+   */
+  private dataProcessors: AppDataProcessors;
 
-    /**
-     * DataProcessors instance
-     */
-    private dataProcessors: AppDataProcessors;
+  /**
+   * DataMinings instance
+   */
+  private dataMinings: AppDataMinings;
 
-    /**
-    * DataMinings instance
-    */
-    private dataMinings: AppDataMinings;
+  public static getInstance(): App {
+    return App.app;
+  }
 
-    public static getInstance(): App {
-        return App.app;
+  constructor(private config: IApplicationConfig) {
+    if (App.app instanceof App) {
+      throw new Error(
+        'Não é possível criar mais de uma instância do aplicativo!'
+      );
     }
 
-    constructor(private config: IApplicationConfig) {
+    this.config = config;
+    this.expApp = express();
+    this.setupMongoConfig();
+    App.app = this;
+  }
 
-        if (App.app instanceof App) {
-            throw new Error('Não é possível criar mais de uma instância do aplicativo!');
-        }
+  private setupMongoConfig() {
+    mongoose.Promise = global.Promise;
+    mongoose.connect(process.env.MONGO_URL_SRV, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+  }
 
-        this.config = config;
-        this.expApp = express();
-        this.setupMongoConfig();
-        App.app = this;
-    }
+  private sessionStore: session.Store = new sessionNedbStore({
+    filename: App.ROOT_SESSION_STORE + 'sessions.db'
+  });
 
-    private setupMongoConfig() {
-        mongoose.Promise = global.Promise;
-        mongoose.connect(process.env.MONGO_URL_SRV, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-    }
+  /**
+   * Inicializando e executando o aplicativo
+   */
+  run(): void {
+    this.expApp.use(
+      session({
+        store: this.sessionStore,
+        secret: process.env.SECRET_APP,
+        resave: true,
+        cookie: {
+          path: '/',
+          httpOnly: true,
+          maxAge: 365 * 24 * 60 * 60 * 1000,
+          secure: true
+        },
+        saveUninitialized: true
+      })
+    );
 
-    private sessionStore: session.Store = new sessionNedbStore({
-        filename: App.ROOT_SESSION_STORE + 'sessions.db'
+    this.expApp.use(bodyParser.urlencoded({ extended: false }));
+
+    this.expApp.use((_req: Request, res: Response, next: NextFunction) => {
+      res.contentType('application/json');
+      next();
     });
 
-    /**
-     * Inicializando e executando o aplicativo
-     */
-    run(): void {
-        this.expApp.use(session({
-            store: this.sessionStore,
-            secret: process.env.SECRET_APP,
-            resave: true,
-            cookie: {
-                path: '/',
-                httpOnly: true,
-                maxAge: 365 * 24 * 60 * 60 * 1000,
-                secure: true
-            },
-            saveUninitialized: true
-        }));        
+    this.expApp.use(cookieParse());
+    this.expApp.use(logger('dev'));
+    this.expApp.use(helmet());
 
-        this.expApp.use(bodyParser.urlencoded({ extended: false }));
+    this.dataProviders = new AppDataProviders();
 
-        this.expApp.use((_req: Request, res: Response, next: NextFunction) => {
-            res.contentType('application/json');
-            next();
-        });
+    this.dataLoaders = new AppDataLoaders();
 
-        this.expApp.use(cookieParse());
-        this.expApp.use(logger('dev'));
-        this.expApp.use(helmet());
+    this.dataProcessors = new AppDataProcessors();
 
-        this.dataProviders = new AppDataProviders();
+    this.dataMinings = new AppDataMinings(this);
 
-        this.dataLoaders = new AppDataLoaders();
+    let appRouter = new AppRoutes();
 
-        this.dataProcessors = new AppDataProcessors();
+    appRouter.mount(this.expApp);
 
-        this.dataMinings = new AppDataMinings(this);
+    this.expApp.listen(this.config.listenPort, err => {
+      if (err !== undefined) {
+        console.log(err);
+      } else {
+        console.log('Server run on port: ' + this.config.listenPort);
+      }
+    });
+  }
 
-        let appRouter = new AppRoutes();
+  get providers(): AppDataProviders {
+    return this.dataProviders;
+  }
 
-        appRouter.mount(this.expApp);
+  get loaders(): AppDataLoaders {
+    return this.dataLoaders;
+  }
 
-        this.expApp.listen(this.config.listenPort, (err) => {
-            if (err !== undefined) {
-                console.log(err);
-            } else {
-                console.log("Server run on port: " + this.config.listenPort);
-            }
-        });
-    }
+  get processors(): AppDataProcessors {
+    return this.dataProcessors;
+  }
 
-    get providers(): AppDataProviders {
-        return this.dataProviders;
-    }
-
-    get loaders(): AppDataLoaders {
-        return this.dataLoaders;
-    }
-
-    get processors(): AppDataProcessors {
-        return this.dataProcessors;
-    }
-
-    get minings(): AppDataMinings {
-        return this.dataMinings;
-    }
+  get minings(): AppDataMinings {
+    return this.dataMinings;
+  }
 }

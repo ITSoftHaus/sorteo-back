@@ -1,14 +1,12 @@
 import App from './App';
 
 const APP_CONFIG = {
-    listenPort: process.env.LISTEN_PORT,
-    appName: process.env.APP_NAME
+  listenPort: process.env.LISTEN_PORT,
+  appName: process.env.APP_NAME
 };
 
 try {
-
-    (new App(APP_CONFIG)).run();
-
+  new App(APP_CONFIG).run();
 } catch (e) {
-    console.error(e.message);
+  console.error(e.message);
 }

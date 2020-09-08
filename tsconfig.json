@@ -3,14 +3,8 @@
   "allowUnreachableCode": true,
   "compilerOptions": {
     "esModuleInterop": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./@types"
-    ],
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "typeRoots": ["./node_modules/@types", "./@types"],
+    "lib": ["dom", "esnext"],
     "module": "commonjs",
     "moduleResolution": "node",
     "pretty": true,
@@ -26,14 +20,6 @@
     "skipLibCheck": true,
     "noStrictGenericChecks": true
   },
-  "include": [
-    "./src/app/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "datas",
-    "files",
-    "dist",
-    "sessions"
-  ]
+  "include": ["./src/app/**/*.ts"],
+  "exclude": ["node_modules", "datas", "files", "dist", "sessions"]
 }

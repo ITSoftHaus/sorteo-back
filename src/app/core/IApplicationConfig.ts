@@ -1,6 +1,6 @@
 interface IApplicationConfig {
-    listenPort: string,
-    appName: string
+  listenPort: string;
+  appName: string;
 }
 
 export default IApplicationConfig;

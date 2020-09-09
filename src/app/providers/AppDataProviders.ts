@@ -9,7 +9,7 @@ export default class AppDataProviders {
   private stores: DataProvider[];
 
   constructor() {
-    this.stores = this.getProviders().map(provider => new provider());
+    this.stores = this.getProviders().map(provider => provider);
   }
 
   /**
@@ -42,7 +42,7 @@ export default class AppDataProviders {
   /**
    * Provedores para inicialização
    */
-  private getProviders(): any[] {
-    return [UserDataProvider, LotoFacilDataProvider];
+  private getProviders(): DataProvider[] {
+    return [new UserDataProvider(), new LotoFacilDataProvider()];
   }
 }

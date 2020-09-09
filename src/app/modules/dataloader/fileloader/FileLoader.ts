@@ -56,7 +56,7 @@ export default class FileLoader implements IFileLoader {
     );
 
     try {
-      this.validaResponse(response);
+      this.validaResponse({ response });
       return this.criarArquivo({ file, response, filePath });
     } catch (error) {
       console.error(error);
@@ -90,7 +90,7 @@ export default class FileLoader implements IFileLoader {
     }
   }
 
-  private validaResponse(response: IHttpClientResponse) {
+  private validaResponse({ response }: { response: IHttpClientResponse }) {
     if (response.message.statusCode !== 200) {
       console.info(response.message.url);
       const err: Error = new Error(

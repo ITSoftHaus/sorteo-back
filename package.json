@@ -75,7 +75,7 @@
     "puppeteer": "^5.2.1",
     "regex": "^0.1.1",
     "simple-statistics": "^7.0.5",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "tabletojson": "^1.0.4",
     "typed-rest-client": "^1.7.3",
     "underscore": "^1.9.1",

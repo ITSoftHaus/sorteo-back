@@ -78,7 +78,7 @@
     "socket.io": "^2.3.0",
     "tabletojson": "^1.0.4",
     "typed-rest-client": "^1.7.3",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "underscore.string": "^3.3.5"
   }
 }
